@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misi Memancing Sudut</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; overflow: hidden; }
+    .title-font { font-family: 'Fredoka One', cursive; }
+    
+    .ocean-bg {
+      background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 8%, #FF9F1C 15%, #1E3A8A 35%, #0369A1 60%, #0284C7 85%, #06B6D4 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ocean-bg::before {
+      content: '';
+      position: fixed;
+      top: -10%;
+      right: -5%;
+      width: 40%;
+      height: 40%;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 152, 0, 0.3) 0%, rgba(255, 107, 53, 0.2) 30%, transparent 70%);
+      border-radius: 50%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    
+    .ocean-bg::after {
+      content: '';
+      position: fixed;
+      top: -5%;
+      right: -2%;
+      width: 35%;
+      height: 35%;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 193, 7, 0.4) 0%, transparent 60%);
+      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    .bubble {
+      position: absolute;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
+      border-radius: 50%;
+      animation: float-up 8s infinite ease-in-out;
+    }
+    
+    @keyframes float-up {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-30px) scale(1.1); opacity: 1; }
+    }
+    
+    @keyframes swim {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      25% { transform: translateX(10px) rotate(5deg); }
+      75% { transform: translateX(-10px) rotate(-5deg); }
+    }
+    
+    .fish-swim { animation: swim 3s infinite ease-in-out; }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .bounce { animation: bounce 2s infinite; }
+    
+    .btn-ocean {
+      background: linear-gradient(135deg, #ffd166 0%, #f77f00 100%);
+      border: 3px solid #fff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-ocean:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    
+    .btn-nav {
+      background: linear-gradient(135deg, #48cae4 0%, #0096c7 100%);
+      border: 2px solid #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-nav:hover { transform: scale(1.1); }
+    
+    .card-glass {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+    }
+    
+    .badge {
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      border: 3px solid #fff;
+      box-shadow: 0 0 20px rgba(255,215,0,0.6);
+      animation: glow 2s infinite alternate;
+    }
+    
+    @keyframes glow {
+      from { box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+      to { box-shadow: 0 0 40px rgba(255,215,0,1); }
+    }
+    
+    @keyframes sway-gentle {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(5px) rotate(3deg); }
+    }
+
+    @keyframes bubble-float-slow {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-40px) scale(1.1); opacity: 0.8; }
+      100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    }
+
+    @keyframes dart-fish {
+      0% { transform: translateX(0) translateY(0) scaleX(1); }
+      25% { transform: translateX(20px) translateY(-15px) scaleX(1); }
+      50% { transform: translateX(0) translateY(0) scaleX(1); }
+      75% { transform: translateX(-20px) translateY(15px) scaleX(-1); }
+      100% { transform: translateX(0) translateY(0) scaleX(1); }
+    }
+
+    @keyframes circle-swim {
+      0% { transform: translateX(0) translateY(0); }
+      25% { transform: translateX(30px) translateY(-30px); }
+      50% { transform: translateX(0) translateY(-40px); }
+      75% { transform: translateX(-30px) translateY(-30px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    .seaweed-group {
+      animation: sway-gentle 5s infinite ease-in-out;
+      transform-origin: top center;
+    }
+
+    .bubble-deco {
+      animation: bubble-float-slow 6s infinite ease-in-out;
+    }
+
+    .fish-deco {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    
+    .slide { 
+      display: none; 
+      height: 100%; 
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .slide.active { display: flex; flex-direction: column; }
+    
+    .draggable { cursor: grab; touch-action: none; user-select: none; }
+    .draggable:active { cursor: grabbing; }
+    
+    .drop-zone {
+      border: 3px dashed rgba(255,255,255,0.5);
+      border-radius: 15px;
+      min-height: 60px;
+      transition: all 0.3s ease;
+    }
+    
+    .drop-zone.over {
+      background: rgba(255,255,255,0.3);
+      border-color: #ffd166;
+    }
+    
+    .feedback-msg {
+      position: fixed;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      pointer-events: none;
+      animation: fadeOut 2s ease forwards;
+      z-index: 1000;
+    }
+    
+    .feedback-correct {
+      background: #4ade80;
+      color: #1f2937;
+    }
+    
+    .feedback-wrong {
+      background: #f87171;
+      color: white;
+    }
+    
+    @keyframes fadeOut {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-30px); }
+    }
+
+    .letter-fish {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      margin: 3px;
+      background: linear-gradient(135deg, #ff9f43 0%, #ee5a24 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    
+    .letter-fish:hover { transform: scale(1.15); }
+    
+    .letter-fish.selected {
+      background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+      transform: scale(0.9);
+    }
+
+    .target-fish {
+      cursor: crosshair;
+      transition: all 0.3s ease;
+    }
+    
+    .target-fish:hover {
+      filter: brightness(1.2);
+      transform: scale(1.1);
+    }
+    
+    .target-fish.shot {
+      animation: fish-shot 0.5s forwards;
+    }
+    
+    @keyframes fish-shot {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3) rotate(20deg); }
+      100% { transform: scale(0) rotate(180deg); opacity: 0; }
+    }
+
+    .emoji-btn {
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: inline-block;
+    }
+    
+    .emoji-btn:hover { transform: scale(1.3); }
+    .emoji-btn:active { transform: scale(0.9); }
+
+    @media (max-width: 768px) {
+      .btn-ocean { padding: 0.5rem 1rem; font-size: 0.9rem; }
+      .title-font { font-size: 1.5rem; }
+      .letter-fish { width: 35px; height: 35px; font-size: 1rem; }
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full ocean-bg">
+  <div id="app" class="h-full w-full relative"><!-- SLIDE 1: Cover -->
+   <div id="slide1" class="slide active">
+    <div class="h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+     <div class="fish-deco" style="left:5%;top:15%;animation:dart-fish 6s infinite;opacity:0.7;">
+      <span class="text-5xl">🐠</span>
+     </div>
+     <div class="fish-deco" style="right:8%;top:25%;animation:circle-swim 8s infinite;animation-delay:1s;opacity:0.6;">
+      <span class="text-4xl">🐡</span>
+     </div>
+     <div class="fish-deco" style="left:12%;bottom:30%;animation:dart-fish 7s infinite;animation-delay:2s;opacity:0.5;">
+      <span class="text-6xl">🦈</span>
+     </div>
+     <div class="fish-deco" style="right:15%;bottom:20%;animation:circle-swim 7s infinite;animation-delay:0.5s;opacity:0.7;">
+      <span class="text-5xl">🐟</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-5" style="height:150px;width:40px;animation-delay:0s;">
+      <svg viewbox="0 0 30 150" class="w-full h-full">
+       <path d="M15 150 Q5 110 15 80 Q25 50 15 20 Q8 0 15 0" stroke="#2d6a4f" stroke-width="8" fill="none" />
+      </svg>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-32" style="height:120px;width:40px;animation-delay:1s;">
+      <svg viewbox="0 0 30 120" class="w-full h-full">
+       <path d="M15 120 Q25 85 15 60 Q5 35 15 10" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-10" style="height:140px;width:40px;animation-delay:0.5s;">
+      <svg viewbox="0 0 30 140" class="w-full h-full">
+       <path d="M15 140 Q8 100 15 70 Q22 40 15 10" stroke="#2d6a4f" stroke-width="8" fill="none" />
+      </svg>
+     </div>
+     <div class="bubble-deco" style="width:12px;height:12px;left:20%;top:30%;animation-delay:0.5s;"></div>
+     <div class="bubble-deco" style="width:14px;height:14px;right:25%;top:40%;animation-delay:1.5s;"></div>
+     <div class="bubble-deco" style="width:10px;height:10px;left:15%;bottom:40%;animation-delay:2s;"></div>
+     <div class="card-glass p-8 md:p-12 text-center max-w-2xl mx-auto relative z-10">
+      <div class="text-6xl mb-4 bounce">
+       🎣
+      </div>
+      <h1 id="mainTitle" class="title-font text-4xl md:text-6xl text-white mb-2 drop-shadow-lg" style="text-shadow: 0 0 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 0, 0, 0.6);">Misi Memancing Sudut</h1>
+      <p class="text-xl md:text-2xl text-white mb-2 font-bold" style="text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);">Kelas 7 SMP</p>
+      <p id="teacherName" class="text-lg text-white mb-8 font-semibold" style="text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Oleh: Zayyan Shabrina, S.Pd.</p>
+      <div class="grid grid-cols-2 gap-4 max-w-md mx-auto"><button onclick="goToSlide(2)" class="btn-ocean text-gray-900 font-bold py-3 px-6 rounded-full text-lg">🎯 Mulai Misi</button> <button onclick="goToSlide(4)" class="btn-ocean text-gray-900 font-bold py-3 px-6 rounded-full text-lg">📚 Materi</button> <button onclick="goToSlide(6)" class="btn-ocean text-gray-900 font-bold py-3 px-6 rounded-full text-lg">🎮 Game</button> <button onclick="goToSlide(12)" class="btn-ocean text-gray-900 font-bold py-3 px-6 rounded-full text-lg">💭 Refleksi</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- SLIDE 2: Cerita Misi -->
+   <div id="slide2" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+     <div class="fish-deco" style="left:10%;top:20%;animation:circle-swim 7s infinite;opacity:0.5;">
+      <span class="text-4xl">🐟</span>
+     </div>
+     <div class="fish-deco" style="right:12%;top:35%;animation:dart-fish 6s infinite;animation-delay:1.5s;opacity:0.6;">
+      <span class="text-5xl">🐠</span>
+     </div>
+     <div class="fish-deco" style="left:8%;bottom:25%;animation:circle-swim 8s infinite;animation-delay:2s;opacity:0.5;">
+      <span class="text-6xl">🦐</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-0" style="height:120px;width:40px;animation-delay:0.3s;">
+      <svg viewbox="0 0 30 120" class="w-full h-full">
+       <path d="M15 120 Q5 80 15 50 Q25 30 15 0" stroke="#2d6a4f" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-0" style="height:130px;width:40px;animation-delay:0.8s;">
+      <svg viewbox="0 0 30 130" class="w-full h-full">
+       <path d="M15 130 Q25 90 15 60 Q5 30 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="bubble-deco" style="width:10px;height:10px;left:18%;top:40%;animation-delay:1s;"></div>
+     <div class="bubble-deco" style="width:12px;height:12px;right:20%;top:50%;animation-delay:2s;"></div>
+     <div class="card-glass p-8 max-w-2xl mx-auto text-center relative z-10">
+      <div class="text-6xl mb-6">
+       🎣🐟✨
+      </div>
+      <h2 class="title-font text-3xl md:text-4xl mb-6" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">Cerita Misi</h2>
+      <div class="bg-white/20 rounded-2xl p-6 mb-6">
+       <p class="text-xl md:text-2xl leading-relaxed font-semibold" style="text-shadow: 0 2px 6px rgba(255, 255, 255, 0.2); color: #000000;"><span class="font-bold" style="color: #000000;">🎣 Kamu adalah pemancing sudut profesional.</span> Untuk mendapatkan <span class="font-bold" style="color: #000000;">🐠 ikan emas Transversal</span>, kamu harus mengenali semua jenis hubungan sudut!</p>
+      </div>
+      <div class="bg-white/10 rounded-2xl p-4 mb-6">
+       <p class="text-lg font-bold mb-3" style="text-shadow: 0 2px 6px rgba(255, 255, 255, 0.2); color: #000000;">🎮 Ada 4 Level Game:</p>
+       <div class="grid grid-cols-2 gap-2 text-left text-sm">
+        <div class="bg-white/20 rounded-lg p-2">
+         <p class="font-bold" style="text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2); color: #000000;">⭐ Level 1</p>
+         <p class="font-semibold" style="color: #000000;">Pemancing Pemula</p>
+        </div>
+        <div class="bg-white/20 rounded-lg p-2">
+         <p class="font-bold" style="text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2); color: #000000;">⭐ Level 2</p>
+         <p class="font-semibold" style="color: #000000;">Penangkap Sudut</p>
+        </div>
+        <div class="bg-white/20 rounded-lg p-2">
+         <p class="font-bold" style="text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2); color: #000000;">⭐ Level 3</p>
+         <p class="font-semibold" style="color: #000000;">Master Sudut</p>
+        </div>
+        <div class="bg-white/20 rounded-lg p-2">
+         <p class="font-bold" style="text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2); color: #000000;">⭐ Level 4</p>
+         <p class="font-semibold" style="color: #000000;">Raja Transversal</p>
+        </div>
+       </div>
+      </div>
+      <p class="text-white text-lg font-bold" style="text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);">💰 Kumpulkan poin setiap level dan <span style="color: #000000;">jadilah Master Pemancing Sudut!</span></p>
+      <div class="flex justify-center gap-4 text-4xl mb-6 mt-4"><span class="fish-swim">🐠</span> <span class="fish-swim" style="animation-delay:0.5s;">🐟</span> <span class="fish-swim" style="animation-delay:1s;">🐡</span> <span class="fish-swim" style="animation-delay:1.5s;">🦐</span>
+      </div>
+     </div><button onclick="goToSlide(3)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 3: Tujuan Pembelajaran -->
+   <div id="slide3" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+     <div class="fish-deco" style="left:8%;top:20%;animation:dart-fish 7s infinite;opacity:0.5;">
+      <span class="text-5xl">🐡</span>
+     </div>
+     <div class="fish-deco" style="right:10%;bottom:30%;animation:circle-swim 8s infinite;animation-delay:1s;opacity:0.6;">
+      <span class="text-4xl">🐠</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-10" style="height:100px;width:40px;animation-delay:0.5s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q5 60 15 30 Q25 5 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="bubble-deco" style="width:10px;height:10px;left:25%;top:35%;animation-delay:0.8s;"></div>
+     <div class="bubble-deco" style="width:12px;height:12px;right:15%;bottom:40%;animation-delay:1.5s;"></div>
+     <div class="card-glass p-8 max-w-2xl mx-auto text-center relative z-10">
+      <h2 class="title-font text-3xl md:text-4xl mb-8" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">Tujuan Pembelajaran</h2>
+      <div class="bg-white/20 rounded-2xl p-6 mb-6">
+       <p class="text-lg md:text-xl text-black leading-relaxed font-semibold" style="text-shadow: 0 2px 6px rgba(255, 255, 255, 0.2);">Murid dapat <span class="font-bold" style="color: #000000;">menentukan hubungan antar sudut</span> pada garis-garis yang berpotongan dan pada <span class="font-bold" style="color: #000000;">dua garis sejajar yang dipotong oleh garis transversal</span> dengan benar.</p>
+      </div>
+     </div><button onclick="goToSlide(2)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 left-4">⬅️ Kembali</button>
+    </div>
+   </div><!-- SLIDE 4: Ice Breaking -->
+   <div id="slide4" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col items-center p-4 pb-24 overflow-auto relative">
+     <div class="fish-deco" style="left:12%;top:15%;animation:circle-swim 7s infinite;opacity:0.5;">
+      <span class="text-4xl">🐟</span>
+     </div>
+     <div class="fish-deco" style="right:15%;top:40%;animation:dart-fish 6s infinite;animation-delay:1.5s;opacity:0.6;">
+      <span class="text-5xl">🦈</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-5" style="height:100px;width:40px;animation-delay:0s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q5 65 15 35 Q25 10 15 0" stroke="#2d6a4f" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-5" style="height:110px;width:40px;animation-delay:0.8s;">
+      <svg viewbox="0 0 30 110" class="w-full h-full">
+       <path d="M15 110 Q25 70 15 40 Q5 15 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-6 max-w-4xl mx-auto text-center relative z-10 mt-4">
+      <h2 class="title-font text-2xl md:text-3xl mb-4" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">🎮 Ice Breaking: Tebak Siapa Aku?</h2>
+      <p class="font-semibold mb-4" style="color: #000000;">Klik ikan untuk melihat siapa aku!</p>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+       <div class="bg-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/30 transition" onclick="toggleFishAnswer(1)">
+        <div class="text-5xl fish-swim mb-2">
+         🐠
+        </div>
+        <p class="text-white font-bold">Ikan #1</p>
+        <p class="text-sm mt-2 font-semibold" style="color: #000000;">"Aku ada di sudut buku"</p>
+        <div id="fish-answer-1" class="hidden mt-2 bg-gradient-to-r from-yellow-300 to-yellow-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+         Siku-siku (90°)
+        </div>
+       </div>
+       <div class="bg-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/30 transition" onclick="toggleFishAnswer(2)">
+        <div class="text-5xl fish-swim mb-2" style="animation-delay:0.5s;">
+         🐟
+        </div>
+        <p class="text-white font-bold">Ikan #2</p>
+        <p class="text-sm mt-2 font-semibold" style="color: #000000;">"Aku lebih kecil dari siku-siku"</p>
+        <div id="fish-answer-2" class="hidden mt-2 bg-gradient-to-r from-cyan-300 to-blue-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+         Lancip (&lt;90°)
+        </div>
+       </div>
+       <div class="bg-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/30 transition" onclick="toggleFishAnswer(3)">
+        <div class="text-5xl fish-swim mb-2" style="animation-delay:1s;">
+         🐡
+        </div>
+        <p class="text-white font-bold">Ikan #3</p>
+        <p class="text-sm mt-2 font-semibold" style="color: #000000;">"Aku lebih besar dari siku-siku tapi kurang dari lurus"</p>
+        <div id="fish-answer-3" class="hidden mt-2 bg-gradient-to-r from-orange-300 to-red-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+         Tumpul (90°-180°)
+        </div>
+       </div>
+       <div class="bg-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/30 transition" onclick="toggleFishAnswer(4)">
+        <div class="text-5xl fish-swim mb-2" style="animation-delay:1.5s;">
+         🦈
+        </div>
+        <p class="text-white font-bold">Ikan #4</p>
+        <p class="text-sm mt-2 font-semibold" style="color: #000000;">"Aku membentuk garis lurus"</p>
+        <div id="fish-answer-4" class="hidden mt-2 bg-gradient-to-r from-pink-300 to-rose-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+         Lurus (180°)
+        </div>
+       </div>
+       <div class="bg-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/30 transition" onclick="toggleFishAnswer(5)">
+        <div class="text-5xl fish-swim mb-2" style="animation-delay:2s;">
+         🐙
+        </div>
+        <p class="text-white font-bold">Ikan #5</p>
+        <p class="text-sm mt-2 font-semibold" style="color: #000000;">"Aku lebih dari 180° tapi kurang dari 360°"</p>
+        <div id="fish-answer-5" class="hidden mt-2 bg-gradient-to-r from-purple-300 to-indigo-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+         Refleks (180°-360°)
+        </div>
+       </div>
+       <div class="bg-white/20 rounded-2xl p-4 cursor-pointer hover:bg-white/30 transition" onclick="toggleFishAnswer(6)">
+        <div class="text-5xl fish-swim mb-2" style="animation-delay:2.5s;">
+         🦐
+        </div>
+        <p class="text-white font-bold">Ikan #6</p>
+        <p class="text-sm mt-2 font-semibold" style="color: #000000;">"Kedua kakiku berimpit"</p>
+        <div id="fish-answer-6" class="hidden mt-2 bg-gradient-to-r from-lime-300 to-emerald-400 text-gray-900 px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+         Nol (0°)
+        </div>
+       </div>
+      </div>
+     </div><button onclick="goToSlide(5)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 5: Materi Interaktif -->
+   <div id="slide5" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col items-center p-4 pb-24 overflow-auto relative">
+     <div class="fish-deco" style="left:10%;top:25%;animation:dart-fish 6s infinite;opacity:0.5;">
+      <span class="text-4xl">🐠</span>
+     </div>
+     <div class="fish-deco" style="right:12%;top:45%;animation:circle-swim 8s infinite;animation-delay:1s;opacity:0.6;">
+      <span class="text-5xl">🐟</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-0" style="height:90px;width:40px;animation-delay:0.3s;">
+      <svg viewbox="0 0 30 90" class="w-full h-full">
+       <path d="M15 90 Q5 55 15 30 Q25 5 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-4 md:p-6 max-w-5xl mx-auto w-full relative z-10 mt-4">
+      <div class="flex justify-between items-center mb-4 relative z-20">
+       <h2 class="title-font text-2xl md:text-3xl" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">📐 Hubungan Sudut pada Garis Sejajar</h2>
+      </div>
+      <div class="flex flex-col lg:flex-row gap-4">
+       <div class="flex-1 bg-white/10 rounded-2xl p-4 relative min-h-[300px]">
+        <svg viewbox="0 0 400 300" class="w-full h-full"><line x1="50" y1="80" x2="350" y2="80" stroke="#ffd166" stroke-width="3" /> <line x1="50" y1="200" x2="350" y2="200" stroke="#ffd166" stroke-width="3" /> <line x1="100" y1="20" x2="300" y2="280" stroke="#06d6a0" stroke-width="3" /> <text x="360" y="85" fill="white" font-weight="bold">
+          m
+         </text> <text x="360" y="205" fill="white" font-weight="bold">
+          n
+         </text> <text x="305" y="275" fill="white" font-weight="bold">
+          t
+         </text>
+        </svg>
+        <div id="angle1" class="draggable absolute bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:140px;top:40px;">
+         1
+        </div>
+        <div id="angle2" class="draggable absolute bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:170px;top:40px;">
+         2
+        </div>
+        <div id="angle3" class="draggable absolute bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:140px;top:75px;">
+         3
+        </div>
+        <div id="angle4" class="draggable absolute bg-yellow-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:170px;top:75px;">
+         4
+        </div>
+        <div id="angle5" class="draggable absolute bg-purple-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:200px;top:145px;">
+         5
+        </div>
+        <div id="angle6" class="draggable absolute bg-pink-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:230px;top:145px;">
+         6
+        </div>
+        <div id="angle7" class="draggable absolute bg-indigo-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:200px;top:180px;">
+         7
+        </div>
+        <div id="angle8" class="draggable absolute bg-teal-500 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shadow-lg" style="left:230px;top:180px;">
+         8
+        </div>
+        <p class="text-white/70 text-xs mt-2 text-center">💡 Geser nomor sudut untuk mempelajari posisinya!</p>
+       </div>
+       <div class="flex-1 space-y-2 text-sm">
+        <div class="bg-red-500/30 rounded-xl p-3">
+         <h3 style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">🔴 Sehadap</h3>
+         <p class="font-semibold" style="color: #000000;">∠1 &amp; ∠5, ∠2 &amp; ∠6, ∠3 &amp; ∠7, ∠4 &amp; ∠8</p>
+         <p style="color: #000000; font-size: 0.75rem;">Posisi sama, besar sama</p>
+        </div>
+        <div class="bg-blue-500/30 rounded-xl p-3">
+         <h3 style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">🔵 Bertolak Belakang</h3>
+         <p class="font-semibold" style="color: #000000;">∠1 &amp; ∠4, ∠2 &amp; ∠3, ∠5 &amp; ∠8, ∠6 &amp; ∠7</p>
+         <p style="color: #000000; font-size: 0.75rem;">Saling berhadapan, besar sama</p>
+        </div>
+        <div class="bg-green-500/30 rounded-xl p-3">
+         <h3 style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">🟢 Dalam Berseberangan</h3>
+         <p class="font-semibold" style="color: #000000;">∠3 &amp; ∠6, ∠4 &amp; ∠5</p>
+         <p style="color: #000000; font-size: 0.75rem;">Di dalam, berseberangan, besar sama</p>
+        </div>
+        <div class="bg-purple-500/30 rounded-xl p-3">
+         <h3 style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">🟣 Luar Berseberangan</h3>
+         <p class="font-semibold" style="color: #000000;">∠1 &amp; ∠8, ∠2 &amp; ∠7</p>
+         <p style="color: #000000; font-size: 0.75rem;">Di luar, berseberangan, besar sama</p>
+        </div>
+        <div class="bg-orange-500/30 rounded-xl p-3">
+         <h3 style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">🟠 Dalam Sepihak</h3>
+         <p class="font-semibold" style="color: #000000;">∠3 &amp; ∠5, ∠4 &amp; ∠6</p>
+         <p style="color: #000000; font-size: 0.75rem;">Di dalam, sepihak, jumlah 180°</p>
+        </div>
+        <div class="bg-pink-500/30 rounded-xl p-3">
+         <h3 style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">🩷 Luar Sepihak</h3>
+         <p class="font-semibold" style="color: #000000;">∠1 &amp; ∠7, ∠2 &amp; ∠8</p>
+         <p style="color: #000000; font-size: 0.75rem;">Di luar, sepihak, jumlah 180°</p>
+        </div>
+       </div>
+      </div>
+     </div><button onclick="goToSlide(4)" class="btn-nav text-white font-bold py-2 px-4 rounded-full fixed bottom-4 left-4 z-50">⬅️ Kembali</button>
+    </div>
+   </div><!-- SLIDE 6: Level 1 - Drag & Drop -->
+   <div id="slide6" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col p-4 overflow-auto relative">
+     <div class="fish-deco" style="left:8%;top:20%;animation:circle-swim 7s infinite;opacity:0.5;">
+      <span class="text-4xl">🐡</span>
+     </div>
+     <div class="fish-deco" style="right:10%;bottom:25%;animation:dart-fish 6s infinite;animation-delay:1.5s;opacity:0.6;">
+      <span class="text-5xl">🐠</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-5" style="height:100px;width:40px;animation-delay:0.2s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q5 60 15 30 Q25 5 15 0" stroke="#2d6a4f" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-4 max-w-4xl mx-auto w-full relative z-10 mt-4">
+      <div class="flex items-center justify-between mb-3">
+       <h2 class="title-font text-xl md:text-2xl" style="color: #000000;">🎮 LEVEL 1: Pemancing Pemula</h2>
+       <div class="flex gap-2"><span style="color: #000000; font-weight: bold; font-size: 1.125rem;">Skor: <span id="level1-score">0</span></span> <button onclick="resetLevel1()" class="btn-nav text-white text-sm py-1 px-3 rounded-full">🔄 Reset</button>
+       </div>
+      </div>
+      <div class="bg-white/20 rounded-xl p-3 mb-3">
+       <p style="color: #000000; font-size: 0.875rem;"><strong>📋 Petunjuk:</strong> Seret pasangan sudut ke kategori yang benar!</p>
+      </div>
+      <div id="level1-items" class="flex flex-wrap gap-2 justify-center mb-4">
+       <div class="level1-drag draggable bg-yellow-400 text-gray-800 px-3 py-2 rounded-full font-bold text-sm" data-answer="sehadap">
+        ∠1 &amp; ∠5
+       </div>
+       <div class="level1-drag draggable bg-orange-400 text-white px-3 py-2 rounded-full font-bold text-sm" data-answer="bertolak">
+        ∠1 &amp; ∠4
+       </div>
+       <div class="level1-drag draggable bg-green-400 text-white px-3 py-2 rounded-full font-bold text-sm" data-answer="dalam-ber">
+        ∠3 &amp; ∠6
+       </div>
+       <div class="level1-drag draggable bg-purple-400 text-white px-3 py-2 rounded-full font-bold text-sm" data-answer="luar-ber">
+        ∠1 &amp; ∠8
+       </div>
+       <div class="level1-drag draggable bg-pink-400 text-white px-3 py-2 rounded-full font-bold text-sm" data-answer="dalam-se">
+        ∠3 &amp; ∠5
+       </div>
+       <div class="level1-drag draggable bg-teal-400 text-white px-3 py-2 rounded-full font-bold text-sm" data-answer="luar-se">
+        ∠1 &amp; ∠7
+       </div>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+       <div class="drop-zone p-3 text-center" data-category="sehadap">
+        <p style="color: #000000; font-weight: bold; font-size: 0.875rem; margin-bottom: 0.5rem;">Sehadap</p>
+        <div class="dropped-items min-h-[40px]"></div>
+       </div>
+       <div class="drop-zone p-3 text-center" data-category="bertolak">
+        <p style="color: #000000; font-weight: bold; font-size: 0.875rem; margin-bottom: 0.5rem;">Bertolak Belakang</p>
+        <div class="dropped-items min-h-[40px]"></div>
+       </div>
+       <div class="drop-zone p-3 text-center" data-category="dalam-ber">
+        <p style="color: #000000; font-weight: bold; font-size: 0.875rem; margin-bottom: 0.5rem;">Dalam Berseberangan</p>
+        <div class="dropped-items min-h-[40px]"></div>
+       </div>
+       <div class="drop-zone p-3 text-center" data-category="luar-ber">
+        <p style="color: #000000; font-weight: bold; font-size: 0.875rem; margin-bottom: 0.5rem;">Luar Berseberangan</p>
+        <div class="dropped-items min-h-[40px]"></div>
+       </div>
+       <div class="drop-zone p-3 text-center" data-category="dalam-se">
+        <p style="color: #000000; font-weight: bold; font-size: 0.875rem; margin-bottom: 0.5rem;">Dalam Sepihak</p>
+        <div class="dropped-items min-h-[40px]"></div>
+       </div>
+       <div class="drop-zone p-3 text-center" data-category="luar-se">
+        <p style="color: #000000; font-weight: bold; font-size: 0.875rem; margin-bottom: 0.5rem;">Luar Sepihak</p>
+        <div class="dropped-items min-h-[40px]"></div>
+       </div>
+      </div>
+      <div id="level1-result" class="mt-4 text-center hidden">
+       <div class="badge inline-block px-6 py-3 rounded-2xl">
+        <p class="text-xl font-bold text-gray-800">🏆 BADGE: Pemancing Pemula!</p>
+       </div>
+      </div>
+     </div><button onclick="goToSlide(7)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 7: Level 2 - Benar/Salah -->
+   <div id="slide7" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col p-4 overflow-auto relative">
+     <div class="fish-deco" style="left:12%;top:25%;animation:dart-fish 7s infinite;opacity:0.5;">
+      <span class="text-4xl">🐟</span>
+     </div>
+     <div class="fish-deco" style="right:12%;bottom:30%;animation:circle-swim 8s infinite;animation-delay:1.5s;opacity:0.6;">
+      <span class="text-5xl">🦈</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-5" style="height:100px;width:40px;animation-delay:0.5s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q25 60 15 30 Q5 5 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-4 max-w-3xl mx-auto w-full relative z-10 mt-4">
+      <div class="flex items-center justify-between mb-3">
+       <h2 class="title-font text-xl md:text-2xl" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">🎮 LEVEL 2: Penangkap Sudut</h2>
+       <div class="flex gap-2"><span style="color: #000000; font-weight: bold; font-size: 1.125rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Skor: <span id="level2-score">0</span></span> <button onclick="resetLevel2()" class="btn-nav text-white text-sm py-1 px-3 rounded-full">🔄 Reset</button>
+       </div>
+      </div>
+      <div class="bg-white/10 rounded-xl p-3 mb-4">
+       <p style="color: #000000; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);"><strong>📋 Petunjuk:</strong> Pilih "Dapat Ikan 🐟" jika pernyataan BENAR, atau "Ikan Lepas 💨" jika SALAH!</p>
+      </div>
+      <div id="level2-questions" class="space-y-3">
+       <div class="level2-q bg-white/10 rounded-xl p-4" data-correct="true">
+        <p style="color: #000000; margin-bottom: 0.75rem; font-weight: 600; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">1. Sudut sehadap memiliki besar yang sama</p>
+        <div class="flex gap-3"><button onclick="checkLevel2(this, true)" class="btn-ocean py-2 px-4 rounded-full text-sm">🐟 Dapat Ikan</button> <button onclick="checkLevel2(this, false)" class="btn-ocean py-2 px-4 rounded-full text-sm">💨 Ikan Lepas</button>
+        </div>
+        <div class="result mt-2"></div>
+       </div>
+       <div class="level2-q bg-white/10 rounded-xl p-4" data-correct="false">
+        <p style="color: #000000; margin-bottom: 0.75rem; font-weight: 600; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">2. Sudut dalam sepihak memiliki jumlah 90°</p>
+        <div class="flex gap-3"><button onclick="checkLevel2(this, true)" class="btn-ocean py-2 px-4 rounded-full text-sm">🐟 Dapat Ikan</button> <button onclick="checkLevel2(this, false)" class="btn-ocean py-2 px-4 rounded-full text-sm">💨 Ikan Lepas</button>
+        </div>
+        <div class="result mt-2"></div>
+       </div>
+       <div class="level2-q bg-white/10 rounded-xl p-4" data-correct="true">
+        <p style="color: #000000; margin-bottom: 0.75rem; font-weight: 600; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">3. ∠1 dan ∠4 adalah sudut bertolak belakang</p>
+        <div class="flex gap-3"><button onclick="checkLevel2(this, true)" class="btn-ocean py-2 px-4 rounded-full text-sm">🐟 Dapat Ikan</button> <button onclick="checkLevel2(this, false)" class="btn-ocean py-2 px-4 rounded-full text-sm">💨 Ikan Lepas</button>
+        </div>
+        <div class="result mt-2"></div>
+       </div>
+       <div class="level2-q bg-white/10 rounded-xl p-4" data-correct="true">
+        <p style="color: #000000; margin-bottom: 0.75rem; font-weight: 600; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">4. Sudut luar berseberangan memiliki besar sama</p>
+        <div class="flex gap-3"><button onclick="checkLevel2(this, true)" class="btn-ocean py-2 px-4 rounded-full text-sm">🐟 Dapat Ikan</button> <button onclick="checkLevel2(this, false)" class="btn-ocean py-2 px-4 rounded-full text-sm">💨 Ikan Lepas</button>
+        </div>
+        <div class="result mt-2"></div>
+       </div>
+      </div>
+      <div id="level2-result" class="mt-4 text-center hidden">
+       <div class="badge inline-block px-6 py-3 rounded-2xl">
+        <p class="text-xl font-bold text-gray-800">🏆 BADGE: Penangkap Sudut!</p>
+       </div>
+      </div>
+     </div><button onclick="goToSlide(6)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 left-4">⬅️ Kembali</button> <button onclick="goToSlide(8)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 8: Level 3 - Susun Huruf -->
+   <div id="slide8" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col p-4 overflow-auto relative">
+     <div class="fish-deco" style="left:10%;top:15%;animation:circle-swim 7s infinite;opacity:0.5;">
+      <span class="text-5xl">🐠</span>
+     </div>
+     <div class="fish-deco" style="right:15%;top:40%;animation:dart-fish 6s infinite;animation-delay:2s;opacity:0.6;">
+      <span class="text-4xl">🐡</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-0" style="height:110px;width:40px;animation-delay:0.4s;">
+      <svg viewbox="0 0 30 110" class="w-full h-full">
+       <path d="M15 110 Q5 70 15 40 Q25 15 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-4 max-w-3xl mx-auto w-full relative z-10 mt-4">
+      <div class="flex items-center justify-between mb-3">
+       <h2 class="title-font text-xl md:text-2xl" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">🎮 LEVEL 3: Master Sudut</h2>
+       <div class="flex gap-2"><span style="color: #000000; font-weight: bold; font-size: 1.125rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Skor: <span id="level3-score">0</span></span> <button onclick="clearLevel3Answer()" class="btn-nav text-white text-sm py-1 px-3 rounded-full">🗑️ Hapus</button> <button onclick="resetLevel3()" class="btn-nav text-white text-sm py-1 px-3 rounded-full">🔄 Reset</button>
+       </div>
+      </div>
+      <div class="bg-white/10 rounded-xl p-3 mb-4">
+       <p style="color: #000000; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);"><strong>📋 Petunjuk:</strong> Baca petunjuk, lalu klik huruf-huruf untuk menyusun kata yang benar!</p>
+      </div>
+      <div id="level3-game" class="text-center">
+       <div class="mb-3">
+        <span style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Soal <span id="level3-current">1</span>/4</span>
+       </div>
+       <div class="bg-white/20 rounded-xl p-4 mb-4 text-lg font-bold" style="color: #000000; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">
+        <p id="level3-hint"></p>
+       </div>
+       <div id="level3-letters" class="flex flex-wrap justify-center gap-1 mb-4"></div>
+       <div class="bg-white/20 rounded-xl p-4 mb-4 min-h-[60px]">
+        <p style="color: #000000; font-size: 0.875rem; margin-bottom: 0.5rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Jawabanmu:</p>
+        <div id="level3-answer" class="text-2xl font-bold tracking-widest min-h-[40px]" style="color: #000000; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);"></div>
+       </div><button onclick="checkLevel3()" class="btn-ocean text-white font-bold py-2 px-6 rounded-full">✓ Cek Jawaban</button>
+       <div id="level3-feedback" class="mt-3 text-lg"></div>
+      </div>
+      <div id="level3-result" class="mt-4 text-center hidden">
+       <div class="badge inline-block px-6 py-3 rounded-2xl">
+        <p class="text-xl font-bold text-gray-800">🏆 BADGE: Master Sudut!</p>
+       </div>
+      </div>
+     </div><button onclick="goToSlide(7)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 left-4">⬅️ Kembali</button> <button onclick="goToSlide(9)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 9: Level 4 - Tembak Ikan -->
+   <div id="slide9" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col p-4 overflow-auto relative">
+     <div class="fish-deco" style="left:12%;top:20%;animation:dart-fish 6s infinite;opacity:0.5;">
+      <span class="text-4xl">🐟</span>
+     </div>
+     <div class="fish-deco" style="right:10%;bottom:25%;animation:circle-swim 8s infinite;animation-delay:1s;opacity:0.6;">
+      <span class="text-5xl">🦐</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-0" style="height:100px;width:40px;animation-delay:0.6s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q25 60 15 30 Q5 5 15 0" stroke="#2d6a4f" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-4 max-w-3xl mx-auto w-full relative z-10 mt-4">
+      <div class="flex items-center justify-between mb-3">
+       <h2 class="title-font text-xl md:text-2xl" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">🎮 LEVEL 4: Raja Transversal</h2><button onclick="resetLevel4()" class="btn-nav text-white text-sm py-1 px-3 rounded-full">🔄 Reset</button>
+      </div>
+      <div class="bg-white/10 rounded-xl p-3 mb-4">
+       <p style="color: #000000; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);"><strong>📋 Petunjuk:</strong> Baca soal, lalu tembak ikan dengan jawaban yang benar! 🎯</p>
+      </div>
+      <div id="level4-game" class="text-center">
+       <div class="mb-2">
+        <span style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Soal <span id="level4-current">1</span>/2</span> <span style="color: #000000; margin-left: 1rem; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Skor: <span id="level4-score">0</span> Poin</span>
+       </div>
+       <div id="level4-question" class="bg-white/20 rounded-xl p-4 mb-4 text-lg" style="color: #000000; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);"></div>
+       <div id="level4-options" class="flex flex-wrap justify-center gap-4 mb-4"></div>
+       <div id="level4-feedback" class="mt-3 text-lg"></div>
+      </div>
+      <div id="level4-result" class="mt-4 text-center hidden">
+       <div class="badge inline-block px-6 py-3 rounded-2xl">
+        <p class="text-xl font-bold text-gray-800">🏆 BADGE: Raja Transversal!</p>
+       </div>
+      </div>
+     </div><button onclick="goToSlide(8)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 left-4">⬅️ Kembali</button> <button onclick="goToSlide(10)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 10: Soal Bonus -->
+   <div id="slide10" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+     <div class="fish-deco" style="left:8%;top:20%;animation:circle-swim 7s infinite;opacity:0.5;">
+      <span class="text-5xl">🐠</span>
+     </div>
+     <div class="fish-deco" style="right:12%;bottom:30%;animation:dart-fish 6s infinite;animation-delay:1.5s;opacity:0.6;">
+      <span class="text-4xl">🐡</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-10" style="height:100px;width:40px;animation-delay:0.3s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q5 60 15 30 Q25 5 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-6 max-w-2xl mx-auto text-center relative z-10">
+      <h2 class="title-font text-2xl md:text-3xl mb-4" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">⭐ Soal Tantangan Bonus</h2>
+      <p style="color: #000000; font-weight: bold; margin-bottom: 1rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">+20 Poin Bonus!</p>
+      <div class="bg-white/20 rounded-xl p-6 mb-6">
+       <p style="color: #000000; font-size: 1.125rem; margin-bottom: 1rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Dua garis sejajar dipotong oleh garis transversal. Jika salah satu sudut adalah <span style="color: #000000; font-weight: bold; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">65°</span>, tentukan besar sudut-sudut lainnya!</p>
+       <div class="grid grid-cols-2 gap-4 text-left">
+        <div class="bg-white/10 rounded-lg p-3">
+         <p style="color: #000000; font-weight: bold; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Sudut Sehadap:</p><input type="number" id="bonus-sehadap" class="w-full mt-1 p-2 rounded bg-white/20 text-white border border-white/30" placeholder="...°">
+        </div>
+        <div class="bg-white/10 rounded-lg p-3">
+         <p style="color: #000000; font-weight: bold; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Sudut Bertolak Belakang:</p><input type="number" id="bonus-bertolak" class="w-full mt-1 p-2 rounded bg-white/20 text-white border border-white/30" placeholder="...°">
+        </div>
+        <div class="bg-white/10 rounded-lg p-3">
+         <p style="color: #000000; font-weight: bold; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Sudut Dalam Sepihak:</p><input type="number" id="bonus-dalamsepihak" class="w-full mt-1 p-2 rounded bg-white/20 text-white border border-white/30" placeholder="...°">
+        </div>
+        <div class="bg-white/10 rounded-lg p-3">
+         <p style="color: #000000; font-weight: bold; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Sudut Pelurus:</p><input type="number" id="bonus-pelurus" class="w-full mt-1 p-2 rounded bg-white/20 text-white border border-white/30" placeholder="...°">
+        </div>
+       </div>
+      </div><button onclick="checkBonus()" class="btn-ocean text-white font-bold py-3 px-8 rounded-full text-lg">✓ Cek Jawaban</button>
+      <div id="bonus-result" class="mt-4 text-xl"></div>
+     </div><button onclick="goToSlide(9)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 left-4">⬅️ Kembali</button> <button onclick="goToSlide(11)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 right-4">Lanjut ➡️</button>
+    </div>
+   </div><!-- SLIDE 11: Gelar Master -->
+   <div id="slide11" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+     <div class="fish-deco" style="left:10%;top:15%;animation:dart-fish 6s infinite;opacity:0.5;">
+      <span class="text-4xl">🐟</span>
+     </div>
+     <div class="fish-deco" style="right:12%;bottom:25%;animation:circle-swim 8s infinite;animation-delay:1s;opacity:0.6;">
+      <span class="text-5xl">🦈</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-5" style="height:120px;width:40px;animation-delay:0.3s;">
+      <svg viewbox="0 0 30 120" class="w-full h-full">
+       <path d="M15 120 Q5 75 15 45 Q25 20 15 0" stroke="#2d6a4f" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-5" style="height:100px;width:40px;animation-delay:0.7s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q25 60 15 30 Q5 5 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-6 max-w-2xl mx-auto text-center relative z-10">
+      <div class="text-8xl mb-6 bounce">
+       🏆
+      </div>
+      <h2 class="title-font text-3xl md:text-5xl mb-4" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">SELAMAT!</h2>
+      <p style="color: #000000; font-size: 1.25rem; margin-bottom: 0.75rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Kamu telah mendapatkan gelar:</p>
+      <div class="badge inline-block px-8 py-4 rounded-2xl mb-6">
+       <p class="text-2xl md:text-3xl font-bold text-gray-800">👑 Master Pemancing Sudut 👑</p>
+      </div>
+      <div class="bg-white/20 rounded-xl p-4 mb-6">
+       <p style="color: #000000; font-weight: bold; font-size: 1.125rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Total Poin Akhir:</p>
+       <p style="color: #000000; font-size: 3rem; font-weight: bold; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);" id="final-score">0 Poin</p>
+       <p style="color: #000000; margin-top: 0.5rem; font-size: 0.875rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Level 1 + Level 2 + Level 3 + Level 4 + Bonus = Total</p>
+      </div>
+      <div class="flex justify-center gap-4 flex-wrap mb-6">
+       <div class="bg-white/20 rounded-xl p-3 text-center">
+        <div class="text-3xl">
+         🎣
+        </div>
+        <p class="text-white text-xs">Pemancing Pemula</p>
+       </div>
+       <div class="bg-white/20 rounded-xl p-3 text-center">
+        <div class="text-3xl">
+         🐟
+        </div>
+        <p class="text-white text-xs">Penangkap Sudut</p>
+       </div>
+       <div class="bg-white/20 rounded-xl p-3 text-center">
+        <div class="text-3xl">
+         📐
+        </div>
+        <p class="text-white text-xs">Master Sudut</p>
+       </div>
+       <div class="bg-white/20 rounded-xl p-3 text-center">
+        <div class="text-3xl">
+         👑
+        </div>
+        <p class="text-white text-xs">Raja Transversal</p>
+       </div>
+      </div>
+      <p class="text-white text-lg font-bold" style="text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);">💰 Kumpulkan poin setiap level dan <span style="color: #00FF00;">jadilah Master Pemancing Sudut!</span></p>
+     </div><button onclick="goToSlide(10)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute bottom-4 left-4">⬅️ Kembali</button>
+    </div>
+   </div><!-- SLIDE 12: Refleksi -->
+   <div id="slide12" class="slide"><button onclick="goToSlide(1)" class="btn-nav text-white font-bold py-2 px-4 rounded-full absolute top-4 right-4 z-50">🏠</button>
+    <div class="h-full flex flex-col p-4 overflow-auto relative">
+     <div class="fish-deco" style="left:12%;top:25%;animation:circle-swim 7s infinite;opacity:0.5;">
+      <span class="text-4xl">🐠</span>
+     </div>
+     <div class="fish-deco" style="right:10%;bottom:30%;animation:dart-fish 6s infinite;animation-delay:1.5s;opacity:0.6;">
+      <span class="text-5xl">🐡</span>
+     </div>
+     <div class="seaweed-group absolute bottom-0 left-0" style="height:100px;width:40px;animation-delay:0.2s;">
+      <svg viewbox="0 0 30 100" class="w-full h-full">
+       <path d="M15 100 Q5 60 15 30 Q25 5 15 0" stroke="#40916c" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="seaweed-group absolute bottom-0 right-0" style="height:110px;width:40px;animation-delay:0.6s;">
+      <svg viewbox="0 0 30 110" class="w-full h-full">
+       <path d="M15 110 Q25 70 15 40 Q5 15 15 0" stroke="#2d6a4f" stroke-width="7" fill="none" />
+      </svg>
+     </div>
+     <div class="card-glass p-6 max-w-2xl mx-auto w-full relative z-10 mt-4">
+      <h2 class="title-font text-2xl md:text-3xl mb-6 text-center" style="color: #000000; text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);">💭 Refleksi Pembelajaran</h2>
+      <div class="mb-6"><label style="color: #000000; font-weight: bold; display: block; margin-bottom: 0.5rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Apa yang kamu pelajari hari ini?</label> <textarea id="reflection-input" class="w-full p-4 rounded-xl bg-white/20 text-white border border-white/30 placeholder-white/50" rows="4" placeholder="Tulis refleksimu di sini..."></textarea>
+       <div class="flex gap-2 mt-2"><button onclick="submitReflection()" id="submit-reflection-btn" class="btn-ocean text-white font-bold py-2 px-4 rounded-full text-sm">📤 Kirim</button> <button onclick="clearReflection()" class="btn-nav text-white font-bold py-2 px-4 rounded-full text-sm">🗑️ Hapus</button>
+       </div>
+       <div id="reflection-status" class="mt-2 text-sm"></div>
+      </div>
+      <div id="reflection-list" class="mb-6 space-y-2 max-h-40 overflow-auto"></div>
+      <div class="bg-white/20 rounded-xl p-4"><label style="color: #000000; font-weight: bold; display: block; margin-bottom: 1rem; text-shadow: 0 1px 4px rgba(255, 255, 255, 0.2);">Bagaimana perasaanmu setelah belajar matematika?</label>
+       <div class="flex justify-center gap-8">
+        <div class="text-center"><button onclick="addEmoji('happy')" class="emoji-btn">😄</button>
+         <p style="color: #FFD700; font-size: 0.875rem; margin-top: 0.25rem;">Senang Sekali</p>
+         <p id="emoji-happy" style="color: #00D9FF; font-weight: bold; font-size: 1.25rem;">0</p>
+        </div>
+        <div class="text-center"><button onclick="addEmoji('good')" class="emoji-btn">🙂</button>
+         <p style="color: #FFD700; font-size: 0.875rem; margin-top: 0.25rem;">Senang</p>
+         <p id="emoji-good" style="color: #00D9FF; font-weight: bold; font-size: 1.25rem;">0</p>
+        </div>
+        <div class="text-center"><button onclick="addEmoji('sad')" class="emoji-btn">😔</button>
+         <p style="color: #FFD700; font-size: 0.875rem; margin-top: 0.25rem;">Tidak Senang</p>
+         <p id="emoji-sad" style="color: #00D9FF; font-weight: bold; font-size: 1.25rem;">0</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: 'Misi Memancing Sudut',
+      teacher_name: 'Oleh: Zayyan Shabrina, S.Pd.',
+      primary_color: '#0077b6',
+      secondary_color: '#ffd166',
+      text_color: '#ffffff',
+      accent_color: '#06d6a0',
+      surface_color: 'rgba(255,255,255,0.15)'
+    };
+
+    let config = { ...defaultConfig };
+    let reflections = [];
+    let emojiCounts = { happy: 0, good: 0, sad: 0 };
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (newConfig) => {
+          config = { ...defaultConfig, ...newConfig };
+          document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+          document.getElementById('teacherName').textContent = config.teacher_name || defaultConfig.teacher_name;
+        },
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            { get: () => cfg.primary_color || defaultConfig.primary_color, set: (v) => { cfg.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); } },
+            { get: () => cfg.secondary_color || defaultConfig.secondary_color, set: (v) => { cfg.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); } },
+            { get: () => cfg.text_color || defaultConfig.text_color, set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+            { get: () => cfg.accent_color || defaultConfig.accent_color, set: (v) => { cfg.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['main_title', cfg.main_title || defaultConfig.main_title],
+          ['teacher_name', cfg.teacher_name || defaultConfig.teacher_name]
+        ])
+      });
+    }
+
+    const dataHandler = {
+      onDataChanged(data) {
+        reflections = data;
+        renderReflections();
+      }
+    };
+
+    // Simpan refleksi ke localStorage
+function saveReflectionLocally(text) {
+  let stored = localStorage.getItem('reflections');
+  let reflectionsLocal = stored ? JSON.parse(stored) : [];
+  reflectionsLocal.push({
+    id: Date.now().toString(),
+    reflection_text: text,
+    created_at: new Date().toISOString()
+  });
+  localStorage.setItem('reflections', JSON.stringify(reflectionsLocal));
+  return reflectionsLocal;
+}
+
+// Load refleksi dari localStorage
+function loadReflectionsLocally() {
+  let stored = localStorage.getItem('reflections');
+  return stored ? JSON.parse(stored) : [];
+}
+
+function renderReflectionsLocal() {
+  const container = document.getElementById('reflection-list');
+  if (!container) return;
+
+  reflections = loadReflectionsLocally();
+
+  if (reflections.length === 0) {
+    container.innerHTML = '<p class="text-white/50 text-sm text-center">Belum ada refleksi yang dikirim.</p>';
+    return;
+  }
+
+  container.innerHTML = reflections.map(r => `
+    <div class="bg-white/10 rounded-lg p-3 flex justify-between items-start">
+      <p class="text-white text-sm flex-1">${r.reflection_text}</p>
+      <button onclick="deleteReflectionLocal('${r.id}')" class="text-red-300 hover:text-red-400 ml-2 text-sm">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function deleteReflectionLocal(id) {
+  let stored = localStorage.getItem('reflections');
+  let reflectionsLocal = stored ? JSON.parse(stored) : [];
+  reflectionsLocal = reflectionsLocal.filter(r => r.id !== id);
+  localStorage.setItem('reflections', JSON.stringify(reflectionsLocal));
+  renderReflectionsLocal();
+}
+
+async function submitReflection() {
+  const input = document.getElementById('reflection-input');
+  const statusEl = document.getElementById('reflection-status');
+  const btn = document.getElementById('submit-reflection-btn');
+  const text = input.value.trim();
+
+  if (!text) {
+    statusEl.innerHTML = '<span class="text-yellow-300">⚠️ Tulis refleksimu terlebih dahulu!</span>';
+    return;
+  }
+
+  if (reflections.length >= 999) {
+    statusEl.innerHTML = '<span class="text-red-300">⚠️ Batas maksimal tercapai!</span>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Mengirim...';
+
+  // Simpan secara lokal
+  reflections = saveReflectionLocally(text);
+  input.value = '';
+  renderReflectionsLocal();
+
+  statusEl.innerHTML = '<span class="text-green-300 font-bold">✅ Refleksi berhasil dikirim!</span>';
+
+  btn.disabled = false;
+  btn.textContent = '📤 Kirim';
+
+  setTimeout(() => { statusEl.innerHTML = ''; }, 3000);
+}
+
+// Saat slide 12 aktif, load daftar refleksi dari localStorage
+function loadReflectionsOnSlide12() {
+  const slide12 = document.getElementById('slide12');
+  if (!slide12.classList.contains('active')) return;
+  renderReflectionsLocal();
+}
+
+// Panggil saat pergantian slide ke 12
+function goToSlide(num) {
+  document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+  document.getElementById('slide' + num).classList.add('active');
+
+  if (num === 11) {
+    updateFinalScore();
+  } 
+  if (num === 12) {
+    loadReflectionsOnSlide12();
+  }
+}
+
+
+    function goToSlide(num) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      document.getElementById('slide' + num).classList.add('active');
+      if (num === 11) updateFinalScore();
+    }
+
+    function updateFinalScore() {
+      const level1 = parseInt(document.getElementById('level1-score').textContent) || 0;
+      const level2 = parseInt(document.getElementById('level2-score').textContent) || 0;
+      const level3 = parseInt(document.getElementById('level3-score').textContent) || 0;
+      const level4 = parseInt(document.getElementById('level4-score').textContent) || 0;
+      let bonus = document.getElementById('bonus-result').textContent.includes('Sempurna') ? 20 : 0;
+      const total = level1 + level2 + level3 + level4 + bonus;
+      document.getElementById('final-score').textContent = total + ' Poin';
+    }
+
+    function toggleFishAnswer(num) {
+      document.getElementById('fish-answer-' + num).classList.toggle('hidden');
+    }
+
+    function addEmoji(type) {
+      emojiCounts[type]++;
+      document.getElementById('emoji-' + type).textContent = emojiCounts[type];
+    }
+
+    let level1Correct = 0, level1Score = 0;
+    function initLevel1() {
+      document.querySelectorAll('.level1-drag').forEach(item => {
+        item.addEventListener('touchstart', handleDragStart, { passive: false });
+        item.addEventListener('mousedown', handleMouseDown);
+      });
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.addEventListener('dragover', e => e.preventDefault());
+      });
+    }
+    let draggedItem = null, dragClone = null, offsetX, offsetY;
+    function handleDragStart(e) {
+      e.preventDefault();
+      draggedItem = e.target;
+      const touch = e.touches[0];
+      const rect = draggedItem.getBoundingClientRect();
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+      dragClone = draggedItem.cloneNode(true);
+      dragClone.style.position = 'fixed';
+      dragClone.style.zIndex = '1000';
+      dragClone.style.pointerEvents = 'none';
+      dragClone.style.opacity = '0.8';
+      document.body.appendChild(dragClone);
+      updateClonePosition(touch.clientX, touch.clientY);
+      document.addEventListener('touchmove', handleDragMove, { passive: false });
+      document.addEventListener('touchend', handleDragEnd);
+    }
+    function handleDragMove(e) {
+      if (!dragClone) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      updateClonePosition(touch.clientX, touch.clientY);
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        const rect = zone.getBoundingClientRect();
+        if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+          zone.classList.add('over');
+        } else {
+          zone.classList.remove('over');
+        }
+      });
+    }
+    function handleDragEnd(e) {
+      document.removeEventListener('touchmove', handleDragMove);
+      document.removeEventListener('touchend', handleDragEnd);
+      if (!dragClone || !draggedItem) return;
+      const touch = e.changedTouches[0];
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('over');
+        const rect = zone.getBoundingClientRect();
+        if (touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+          const category = zone.dataset.category;
+          const answer = draggedItem.dataset.answer;
+          zone.querySelector('.dropped-items').appendChild(draggedItem);
+          if (category === answer) {
+            showFeedback(draggedItem, true);
+            level1Correct++;
+            level1Score += 5;
+            document.getElementById('level1-score').textContent = level1Score;
+            checkLevel1Complete();
+          } else {
+            showFeedback(draggedItem, false);
+          }
+        }
+      });
+      dragClone.remove();
+      dragClone = null;
+      draggedItem = null;
+    }
+    function updateClonePosition(x, y) {
+      if (dragClone) {
+        dragClone.style.left = (x - offsetX) + 'px';
+        dragClone.style.top = (y - offsetY) + 'px';
+      }
+    }
+    function handleMouseDown(e) {
+      draggedItem = e.target;
+      const rect = draggedItem.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      dragClone = draggedItem.cloneNode(true);
+      dragClone.style.position = 'fixed';
+      dragClone.style.zIndex = '1000';
+      dragClone.style.pointerEvents = 'none';
+      dragClone.style.opacity = '0.8';
+      document.body.appendChild(dragClone);
+      updateClonePosition(e.clientX, e.clientY);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+    function handleMouseMove(e) {
+      if (!dragClone) return;
+      updateClonePosition(e.clientX, e.clientY);
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        const rect = zone.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          zone.classList.add('over');
+        } else {
+          zone.classList.remove('over');
+        }
+      });
+    }
+    function handleMouseUp(e) {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      if (!dragClone || !draggedItem) return;
+      document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.classList.remove('over');
+        const rect = zone.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          const category = zone.dataset.category;
+          const answer = draggedItem.dataset.answer;
+          zone.querySelector('.dropped-items').appendChild(draggedItem);
+          if (category === answer) {
+            showFeedback(draggedItem, true);
+            level1Correct++;
+            level1Score += 5;
+            document.getElementById('level1-score').textContent = level1Score;
+            checkLevel1Complete();
+          } else {
+            showFeedback(draggedItem, false);
+          }
+        }
+      });
+      dragClone.remove();
+      dragClone = null;
+      draggedItem = null;
+    }
+    function checkLevel1Complete() {
+      if (level1Correct >= 6) {
+        document.getElementById('level1-result').classList.remove('hidden');
+      }
+    }
+    function showFeedback(element, isCorrect) {
+      const msg = document.createElement('div');
+      msg.className = `feedback-msg ${isCorrect ? 'feedback-correct' : 'feedback-wrong'}`;
+      msg.textContent = isCorrect ? '✅ Benar! Saya senang' : '❌ Masih salah, ayo semangat lagi!';
+      const rect = element.getBoundingClientRect();
+      msg.style.left = (rect.left + rect.width / 2 - 50) + 'px';
+      msg.style.top = (rect.top - 40) + 'px';
+      document.body.appendChild(msg);
+      setTimeout(() => msg.remove(), 2000);
+    }
+    function resetLevel1() {
+      level1Correct = 0;
+      level1Score = 0;
+      document.getElementById('level1-result').classList.add('hidden');
+      document.getElementById('level1-score').textContent = '0';
+      const container = document.getElementById('level1-items');
+      document.querySelectorAll('.level1-drag').forEach(item => {
+        container.appendChild(item);
+      });
+    }
+
+    let level2Correct = 0, level2Score = 0;
+    function checkLevel2(btn, answer) {
+      const question = btn.closest('.level2-q');
+      const correct = question.dataset.correct === 'true';
+      const resultDiv = question.querySelector('.result');
+      question.querySelectorAll('button').forEach(b => b.disabled = true);
+      if (answer === correct) {
+        resultDiv.innerHTML = '<span class="text-green-400 font-bold">✅ Benar! Dapat Ikan!</span>';
+        level2Correct++;
+        level2Score += 5;
+        document.getElementById('level2-score').textContent = level2Score;
+      } else {
+        resultDiv.innerHTML = '<span class="text-red-400 font-bold">❌ Salah! Ikan Lepas!</span>';
+      }
+      if (document.querySelectorAll('.level2-q button:disabled').length >= 8) {
+        if (level2Correct >= 3) {
+          document.getElementById('level2-result').classList.remove('hidden');
+        }
+      }
+    }
+    function resetLevel2() {
+      level2Correct = 0;
+      level2Score = 0;
+      document.getElementById('level2-result').classList.add('hidden');
+      document.getElementById('level2-score').textContent = '0';
+      document.querySelectorAll('.level2-q').forEach(q => {
+        q.querySelectorAll('button').forEach(b => b.disabled = false);
+        q.querySelector('.result').innerHTML = '';
+      });
+    }
+
+    const level3Words = [
+      { answer: 'SEHADAP', hint: '🎯 Aku saling berhadapan, posisiku sama dan besarku sama', letters: ['D', 'P', 'H', 'A', 'S', 'E', 'A'] },
+      { answer: 'BERTOLAKBELAKANG', hint: '🎯 Aku saling bermusuhan, saling berhadapan di tengah', letters: ['A', 'B', 'E', 'L', 'T', 'K', 'O', 'R', 'A', 'B', 'E', 'A', 'L', 'K', 'N', 'G'] },
+      { answer: 'TRANSVERSAL', hint: '🎯 Aku garis yang memotong dua garis sejajar', letters: ['S', 'N', 'A', 'R', 'S', 'V', 'L', 'A', 'T', 'R', 'E'] },
+      { answer: 'NOL', hint: '🎯 Aku seperti tidak ada, nilai nolku selalu kosong', letters: ['O', 'N', 'L'] }
+    ];
+    let level3Current = 0, level3SelectedLetters = [], level3Completed = 0, level3Score = 0;
+    function initLevel3() {
+      loadLevel3Question();
+    }
+    function loadLevel3Question() {
+      const word = level3Words[level3Current];
+      document.getElementById('level3-current').textContent = level3Current + 1;
+      document.getElementById('level3-hint').textContent = word.hint;
+      document.getElementById('level3-answer').textContent = '';
+      document.getElementById('level3-feedback').innerHTML = '';
+      level3SelectedLetters = [];
+      const container = document.getElementById('level3-letters');
+      container.innerHTML = '';
+      const shuffled = [...word.letters].sort(() => Math.random() - 0.5);
+      shuffled.forEach((letter, i) => {
+        const letterEl = document.createElement('span');
+        letterEl.className = 'letter-fish';
+        letterEl.textContent = letter;
+        letterEl.dataset.original = letter;
+        letterEl.dataset.used = 'false';
+        letterEl.onclick = () => selectLetter(letterEl, letter);
+        container.appendChild(letterEl);
+      });
+    }
+    function selectLetter(el, letter) {
+      if (el.dataset.used === 'true') return;
+      el.dataset.used = 'true';
+      el.classList.add('selected');
+      level3SelectedLetters.push(letter);
+      document.getElementById('level3-answer').textContent = level3SelectedLetters.join('');
+    }
+    function clearLevel3Answer() {
+      level3SelectedLetters = [];
+      document.getElementById('level3-answer').textContent = '';
+      document.querySelectorAll('.letter-fish').forEach(l => {
+        l.classList.remove('selected');
+        l.dataset.used = 'false';
+      });
+    }
+    function checkLevel3() {
+      const word = level3Words[level3Current];
+      const userAnswer = level3SelectedLetters.join('');
+      const feedback = document.getElementById('level3-feedback');
+      if (userAnswer === word.answer) {
+        feedback.innerHTML = '<span class="text-green-400 font-bold">✅ Benar Sekali! Hebat!</span>';
+        level3Completed++;
+        level3Score += 5;
+        document.getElementById('level3-score').textContent = level3Score;
+        setTimeout(() => {
+          if (level3Current < level3Words.length - 1) {
+            level3Current++;
+            loadLevel3Question();
+          } else {
+            document.getElementById('level3-result').classList.remove('hidden');
+          }
+        }, 1500);
+      } else {
+        feedback.innerHTML = '<span class="text-red-400 font-bold">❌ Belum tepat. Coba urutkan hurufnya lagi!</span>';
+      }
+    }
+    function resetLevel3() {
+      level3Current = 0;
+      level3Completed = 0;
+      level3Score = 0;
+      document.getElementById('level3-result').classList.add('hidden');
+      document.getElementById('level3-score').textContent = '0';
+      loadLevel3Question();
+    }
+
+    const level4Questions = [
+      { q: 'Sudut yang posisinya sama dan besarnya sama disebut...', options: ['Sehadap', 'Sepihak', 'Bertolak'], answer: 'Sehadap' },
+      { q: '∠1 dan ∠4 merupakan sudut...', options: ['Sehadap', 'Bertolak Belakang', 'Dalam Sepihak'], answer: 'Bertolak Belakang' }
+    ];
+    let level4Current = 0, level4Score = 0;
+    function initLevel4() {
+      loadLevel4Question();
+    }
+    function loadLevel4Question() {
+      const q = level4Questions[level4Current];
+      document.getElementById('level4-current').textContent = level4Current + 1;
+      document.getElementById('level4-score').textContent = level4Score;
+      document.getElementById('level4-question').textContent = q.q;
+      document.getElementById('level4-feedback').innerHTML = '';
+      const container = document.getElementById('level4-options');
+      container.innerHTML = '';
+      const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d'];
+      q.options.forEach((opt, i) => {
+        const fish = document.createElement('div');
+        fish.className = 'target-fish cursor-pointer text-center';
+        fish.innerHTML = `<div class="text-6xl fish-swim" style="animation-delay:${i * 0.3}s;">🐟</div><div class="bg-white/20 rounded-full px-4 py-1 mt-2"><span class="text-white font-bold">${opt}</span></div>`;
+        fish.onclick = () => shootFish(fish, opt, q.answer);
+        container.appendChild(fish);
+      });
+    }
+    function shootFish(fish, selected, answer) {
+      const feedback = document.getElementById('level4-feedback');
+      fish.querySelector('.text-6xl').classList.add('shot');
+      document.querySelectorAll('.target-fish').forEach(f => f.style.pointerEvents = 'none');
+      setTimeout(() => {
+        if (selected === answer) {
+          feedback.innerHTML = '<span class="text-green-400 font-bold text-xl">🎯 Tepat Sasaran! +5 poin</span>';
+          level4Score += 5;
+          document.getElementById('level4-score').textContent = level4Score;
+        } else {
+          feedback.innerHTML = '<span class="text-red-400 font-bold text-xl">💨 Meleset! Jawaban: ' + answer + '</span>';
+        }
+        setTimeout(() => {
+          if (level4Current < level4Questions.length - 1) {
+            level4Current++;
+            loadLevel4Question();
+          } else {
+            document.getElementById('level4-result').classList.remove('hidden');
+          }
+        }, 1500);
+      }, 500);
+    }
+    function resetLevel4() {
+      level4Current = 0;
+      level4Score = 0;
+      document.getElementById('level4-result').classList.add('hidden');
+      loadLevel4Question();
+    }
+
+    function checkBonus() {
+      const sehadap = parseInt(document.getElementById('bonus-sehadap').value);
+      const bertolak = parseInt(document.getElementById('bonus-bertolak').value);
+      const dalamsepihak = parseInt(document.getElementById('bonus-dalamsepihak').value);
+      const pelurus = parseInt(document.getElementById('bonus-pelurus').value);
+      const result = document.getElementById('bonus-result');
+      let correct = 0;
+      if (sehadap === 65) correct++;
+      if (bertolak === 65) correct++;
+      if (dalamsepihak === 115) correct++;
+      if (pelurus === 115) correct++;
+      if (correct === 4) {
+        result.innerHTML = '<span class="text-green-400 font-bold">🎉 Sempurna! +20 Poin Bonus!</span>';
+      } else {
+        result.innerHTML = `<span class="text-yellow-300">${correct}/4 benar. Jawaban: Sehadap=65°, Bertolak=65°, Dalam Sepihak=115°, Pelurus=115°</span>`;
+      }
+    }
+
+    function initDraggableAngles() {
+      document.querySelectorAll('#slide5 .draggable').forEach(el => {
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        el.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          initialLeft = el.offsetLeft;
+          initialTop = el.offsetTop;
+          e.preventDefault();
+        });
+        el.addEventListener('touchstart', (e) => {
+          isDragging = true;
+          const touch = e.touches[0];
+          startX = touch.clientX;
+          startY = touch.clientY;
+          initialLeft = el.offsetLeft;
+          initialTop = el.offsetTop;
+          e.preventDefault();
+        }, { passive: false });
+        document.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          el.style.left = (initialLeft + dx) + 'px';
+          el.style.top = (initialTop + dy) + 'px';
+        });
+        document.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          const touch = e.touches[0];
+          const dx = touch.clientX - startX;
+          const dy = touch.clientY - startY;
+          el.style.left = (initialLeft + dx) + 'px';
+          el.style.top = (initialTop + dy) + 'px';
+        }, { passive: false });
+        document.addEventListener('mouseup', () => isDragging = false);
+        document.addEventListener('touchend', () => isDragging = false);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initLevel1();
+      initLevel3();
+      initLevel4();
+      initDraggableAngles();
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d798b1e5381e785',t:'MTc3MjcxODE0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
